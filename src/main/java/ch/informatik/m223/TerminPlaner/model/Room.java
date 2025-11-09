@@ -1,29 +1,17 @@
 package ch.informatik.m223.TerminPlaner.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-import java.time.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(
-        name = "room",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "uq_room_name", columnNames = "name")
-        }
-)
-@Getter @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Table(name = "rooms")
 public class Room {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, length = 50)
-    private String name;
-
-    @Column
-    private Integer capacity;
+    // Getter und Setter
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 }

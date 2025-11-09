@@ -1,25 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <title>Reservation erstellt</title>
+    <link rel="stylesheet" href="../static/styles.css">
 </head>
 <body>
-<h1>Reservation erfolgreich erstellt!</h1>
+<main class="container">
 
+    <section class="card">
+        <h1>Reservation erfolgreich erstellt!</h1>
 
-<!-- Codes anzeigen, falls vorhanden -->
-<div th:if="${publicCode} or ${privateCode}">
-    <p><strong>Öffentlicher Code:</strong> <span th:text="${publicCode}">PUBLIC</span></p>
-    <p><strong>Privater Code:</strong> <span th:text="${privateCode}">PRIVATE</span></p>
-</div>
+        <div class="alert success mt-3" th:if="${publicCode} or ${privateCode}">
+            <p><strong>Öffentlicher Code:</strong> <span th:text="${publicCode}">PUBLIC</span></p>
+            <p><strong>Privater Code:</strong> <span th:text="${privateCode}">PRIVATE</span></p>
+        </div>
 
+        <div class="actions mt-4">
+            <a th:href="@{/reservations/create}" class="btn">Neue Reservation erstellen</a>
+            <a th:href="@{/}" class="btn">Zur Startseite</a>
+        </div>
+    </section>
 
-<!-- Navigation -->
-<p>
-    <a th:href="@{/reservations/create}">Neue Reservation erstellen</a><br>
-    <a th:href="@{/}">Zur Startseite</a>
-</p>
-
+</main>
 </body>
 </html>

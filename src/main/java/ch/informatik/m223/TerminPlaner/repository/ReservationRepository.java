@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
@@ -22,4 +23,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             LocalDateTime newEndAt,
             LocalDateTime newStartAt
     );
+
+    Optional<Reservation> findByPrivateCode(String privateCode);
+
+    Optional<Reservation> findByPublicCode(String publicCode);
 }

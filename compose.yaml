@@ -8,4 +8,13 @@ services:
       - 'MYSQL_ROOT_PASSWORD=verysecret'
       - 'MYSQL_USER=myuser'
     ports:
-      - '3306'
+      - '3307:3306'
+    volumes:
+      - mysql-data:/var/lib/mysql
+  adminer:
+    image: adminer
+    ports:
+      - "8008:8008"
+
+volumes:
+  mysql-data:

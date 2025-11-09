@@ -1,14 +1,22 @@
 package ch.informatik.m223.TerminPlaner.controller;
 
 
+import ch.informatik.m223.TerminPlaner.service.CodeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class ReservationCreateController {
+
+    private final CodeService codeService;
+
+    public ReservationCreateController(CodeService codeService) {
+        this.codeService = codeService;
+    }
 
     @GetMapping("/reservations/create")
     public String showCreateForm(Model model) {
@@ -25,7 +33,17 @@ public class ReservationCreateController {
             @RequestParam("roomId") Integer roomId,
             @RequestParam("remark") String remark,
             @RequestParam("participants") String participants,
-            Model model) {
+            RedirectAttributes redirectAttributes) {
+
+        // Codes erstellen
+        String publicCode = codeService.generatePublicCode();
+        String privateCode = codeService.generatePrivateCode();
+
+        // Codes zu den Redirect-Attributen hinzufügen
+        redirectAttributes.addFlashAttribute("publicCode", publicCode);
+        redirectAttributes.addFlashAttribute("privateCode", privateCode);
+
+
 
         // Nachher Validierung und Speicherung der Reservation
         System.out.println("Date: " + date);
@@ -36,11 +54,13 @@ public class ReservationCreateController {
         System.out.println("Teilnehmer: " + participants);
 
         // Kleine Bestätigung Nachricht
-        model.addAttribute("message", "Reservation wurde erfolgreich erstellt!");
-        return "reservation_create";
-
-
-
+        redirectAttributes.addFlashAttribute("message", "Reservation erfolgreich erstellt!");
+        return "redirect:/reservations/success";
     }
 
+    @GetMapping("/reservations/success")
+    public String showSuccessPage() {
+    return "reservation_success";
+
+}
 }

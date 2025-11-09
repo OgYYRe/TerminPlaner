@@ -1,7 +1,7 @@
 package ch.informatik.m223.TerminPlaner.controller;
 
-
-import ch.informatik.m223.TerminPlaner.service.CodeService;
+import ch.informatik.m223.TerminPlaner.model.Reservation;
+import ch.informatik.m223.TerminPlaner.service.ReservationService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +12,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class ReservationCreateController {
 
-    private final CodeService codeService;
+    // CodeService wird jetzt vom ReservationService verwaltet
+    private final ReservationService reservationService;
 
-    public ReservationCreateController(CodeService codeService) {
-        this.codeService = codeService;
+    public ReservationCreateController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping("/reservations/create")
@@ -24,7 +25,6 @@ public class ReservationCreateController {
         return "reservation_create";
     }
 
-    //Verarbeitet das Formular zum Erstellen einer neuen Reservation
     @PostMapping("/reservations/create")
     public String handleCreateForm(
             @RequestParam("date") String date,
@@ -32,35 +32,40 @@ public class ReservationCreateController {
             @RequestParam("toTime") String toTime,
             @RequestParam("roomId") Integer roomId,
             @RequestParam("remark") String remark,
-            @RequestParam("participants") String participants,
+            @RequestParam("participants") String participants, // Wird noch nicht gespeichert!
             RedirectAttributes redirectAttributes) {
 
-        // Codes erstellen
-        String publicCode = codeService.generatePublicCode();
-        String privateCode = codeService.generatePrivateCode();
+        try {
+            // Service aufrufen, um die Reservation zu erstellen und zu speichern
+            Reservation savedReservation = reservationService.createReservation(
+                    date, fromTime, toTime, roomId, remark, participants
+            );
 
-        // Codes zu den Redirect-Attributen hinzufügen
-        redirectAttributes.addFlashAttribute("publicCode", publicCode);
-        redirectAttributes.addFlashAttribute("privateCode", privateCode);
+            // Codes aus dem gespeicherten Objekt holen
+            redirectAttributes.addFlashAttribute("publicCode", savedReservation.getPublicCode());
+            redirectAttributes.addFlashAttribute("privateCode", savedReservation.getPrivateCode());
+            redirectAttributes.addFlashAttribute("message", "Reservation erfolgreich erstellt!");
 
+            return "redirect:/reservations/success";
 
+        } catch (ReservationService.ReservationOverlapException | IllegalArgumentException e) {
+            // Fehlerfall 1: Überlappung oder ungültige Zeit
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            // Daten an das Formular zurückgeben, damit der Benutzer sie nicht erneut eingeben muss
+            redirectAttributes.addFlashAttribute("oldDate", date);
+            redirectAttributes.addFlashAttribute("oldFromTime", fromTime);
+            // ... (weitere 'old' Werte hinzufügen)
+            return "redirect:/reservations/create";
 
-        // Nachher Validierung und Speicherung der Reservation
-        System.out.println("Date: " + date);
-        System.out.println("Von: " + fromTime);
-        System.out.println("Bis: " + toTime);
-        System.out.println("Zimmer: " + roomId);
-        System.out.println("Bemerkung: " + remark);
-        System.out.println("Teilnehmer: " + participants);
-
-        // Kleine Bestätigung Nachricht
-        redirectAttributes.addFlashAttribute("message", "Reservation erfolgreich erstellt!");
-        return "redirect:/reservations/success";
+        } catch (ReservationService.RoomNotFoundException e) {
+            // Fehlerfall 2: Raum existiert nicht (sollte durch <select> nicht passieren)
+            redirectAttributes.addFlashAttribute("error", "Der ausgewählte Raum ist ungültig.");
+            return "redirect:/reservations/create";
+        }
     }
 
     @GetMapping("/reservations/success")
     public String showSuccessPage() {
-    return "reservation_success";
-
-}
+        return "reservation_success";
+    }
 }

@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -19,6 +20,10 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final RoomRepository roomRepository;
     private final CodeService codeService;
+
+    public enum CodeType {
+        PRIVATE, PUBLIC, NOT_FOUND
+    }
 
     // Konstruktor-Injection für alle benötigten Abhängigkeiten
     public ReservationService(ReservationRepository reservationRepository,
@@ -88,5 +93,22 @@ public class ReservationService {
 
     public static class RoomNotFoundException extends RuntimeException {
         public RoomNotFoundException(String message) { super(message); }
+    }
+
+    public CodeType checkCode(String code) {
+        // Suche nach privatem Code
+        Optional<Reservation> privateReservation = reservationRepository.findByPrivateCode(code);
+        if (privateReservation.isPresent()) {
+            return CodeType.PRIVATE;
+        }
+
+        // Suche nach öffentlichem Code
+        Optional<Reservation> publicReservation = reservationRepository.findByPublicCode(code);
+        if (publicReservation.isPresent()) {
+            return CodeType.PUBLIC;
+        }
+
+        // Code nicht gefunden
+        return CodeType.NOT_FOUND;
     }
 }

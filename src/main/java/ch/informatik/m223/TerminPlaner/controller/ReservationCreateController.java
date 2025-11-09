@@ -2,12 +2,14 @@ package ch.informatik.m223.TerminPlaner.controller;
 
 import ch.informatik.m223.TerminPlaner.model.Reservation;
 import ch.informatik.m223.TerminPlaner.service.ReservationService;
+import ch.informatik.m223.TerminPlaner.service.ReservationService.ReservationOverlapException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 @Controller
 public class ReservationCreateController {
@@ -48,20 +50,28 @@ public class ReservationCreateController {
 
             return "redirect:/reservations/success";
 
-        } catch (ReservationService.ReservationOverlapException | IllegalArgumentException e) {
-            // Fehlerfall 1: Überlappung oder ungültige Zeit
+        } catch (ReservationOverlapException e) {
+            // 2. FEHLERFALL: RAUM IST BESETZT
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            // Daten an das Formular zurückgeben, damit der Benutzer sie nicht erneut eingeben muss
-            redirectAttributes.addFlashAttribute("oldDate", date);
-            redirectAttributes.addFlashAttribute("oldFromTime", fromTime);
-            // ... (weitere 'old' Werte hinzufügen)
-            return "redirect:/reservations/create";
+
+        } catch (IllegalArgumentException e) {
+            // 3. FEHLERFALL: Ungültige Zeit (Ende vor Start)
+            redirectAttributes.addFlashAttribute("error", "Ungültige Zeitangabe: " + e.getMessage());
 
         } catch (ReservationService.RoomNotFoundException e) {
-            // Fehlerfall 2: Raum existiert nicht (sollte durch <select> nicht passieren)
+            // 4. FEHLERFALL: Raum nicht gefunden
             redirectAttributes.addFlashAttribute("error", "Der ausgewählte Raum ist ungültig.");
-            return "redirect:/reservations/create";
         }
+
+        // 5. Alte Eingaben zurückgeben, falls ein Fehler auftrat
+        redirectAttributes.addFlashAttribute("oldDate", date);
+        redirectAttributes.addFlashAttribute("oldFromTime", fromTime);
+        redirectAttributes.addFlashAttribute("oldToTime", toTime);
+        redirectAttributes.addFlashAttribute("oldRoomId", roomId);
+        redirectAttributes.addFlashAttribute("oldRemark", remark);
+        redirectAttributes.addFlashAttribute("oldParticipants", participants);
+
+        return "redirect:/reservations/create";
     }
 
     @GetMapping("/reservations/success")

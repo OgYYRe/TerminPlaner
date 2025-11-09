@@ -11,22 +11,30 @@
     <section class="card">
         <h1>Neue Reservation erstellen</h1>
 
+        <div th:if="${error}" class="alert error">
+            <p th:text="${error}"></p>
+        </div>
+
+        <div th:if="${message}" class="alert alert-success" style="color: green; margin-bottom: 15px;">
+            <p th:text="${message}"></p>
+        </div>
+
         <form action="/reservations/create" method="post">
             <div class="row two">
                 <div>
                     <label for="date">Datum (TT.MM.JJJJ)</label>
-                    <input id="date" name="date" type="date" required>
+                    <input id="date" name="date" type="date" required th:value="${oldDate}">
                 </div>
             </div>
 
             <div class="row two">
                 <div>
                     <label for="fromTime">Von (HH:MM)</label>
-                    <input id="fromTime" name="fromTime" type="time" min="09:00" max="17:00" required>
+                    <input id="fromTime" name="fromTime" type="time" min="09:00" max="17:00" required th:value="${oldFromTime}">
                 </div>
                 <div>
                     <label for="toTime">Bis (HH:MM)</label>
-                    <input id="toTime" name="toTime" type="time" min="09:00" max="17:00" required>
+                    <input id="toTime" name="toTime" type="time" min="09:00" max="17:00" required th:value="${oldToTime}">
                 </div>
             </div>
 
@@ -34,12 +42,12 @@
                 <div>
                     <label for="roomId">Zimmer</label>
                     <select id="roomId" name="roomId" required>
-                        <option value="" disabled selected>Bitte wählen Sie</option>
-                        <option value="101">101</option>
-                        <option value="102">102</option>
-                        <option value="103">103</option>
-                        <option value="104">104</option>
-                        <option value="105">105</option>
+                        <option value="" disabled selected th:selected="${oldRoomId == null}">Bitte wählen Sie</option>
+                        <option value="101" th:selected="${oldRoomId != null || oldRoomId == 101}">101</option>
+                        <option value="102" th:selected="${oldRoomId != null || oldRoomId == 102}">102</option>
+                        <option value="103" th:selected="${oldRoomId != null || oldRoomId == 103}">103</option>
+                        <option value="104" th:selected="${oldRoomId != null || oldRoomId == 104}">104</option>
+                        <option value="105" th:selected="${oldRoomId != null || oldRoomId == 105}">105</option>
                     </select>
                 </div>
             </div>
@@ -47,7 +55,7 @@
             <div class="row">
                 <div>
                     <label for="remark">Bemerkung (10–200)</label>
-                    <textarea id="remark" name="remark" minlength="10" maxlength="200" required placeholder="Kurze Beschreibung..."></textarea>
+                    <textarea id="remark" name="remark" minlength="10" maxlength="200" required placeholder="Kurze Beschreibung..." th:text="${oldRemark}"></textarea>
                 </div>
             </div>
 
@@ -55,7 +63,8 @@
                 <div>
                     <label for="participants">Teilnehmer (kommagetrennt, Vor- & Nachname)</label>
                     <input type="text" id="participants" name="participants" required
-                           placeholder="Oguzhan Cetinkaya, Luca Waldvogel, Leon Reiter">
+                           placeholder="Oguzhan Cetinkaya, Luca Waldvogel, Leon Reiter"
+                           th:value="${oldParticipants}">
                 </div>
             </div>
 

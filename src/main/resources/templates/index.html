@@ -3,11 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>TerminPlaner</title>
+    <link rel="stylesheet" href="../static/styles.css">
 </head>
 <body>
 
-<h1>Willkommen zum TerminPlaner</h1>
-<p>Verwalten Sie Ihre Termine effizient und einfach.</p>
+<main class="container">
+    <section class="card">
+        <h1>Willkommen zum TerminPlaner</h1>
+        <p>Verwalten Sie Ihre Termine effizient und einfach.</p><br>
+        <a href="reservation_create.html" class="btn">Raum reservieren</a>
+    </section>
+
+    <div class="card">
+        <h2>Reservation suchen</h2>
+        <form action="/check-code" method="post">
+            <label for="code">Reservation Code</label>
+            <input type="text" id="code" name="code" placeholder="z. B. ABCD1234" required>
+            <div class="actions"><button type="submit">Reservation suchen</button></div>
+        </form>
+    </div>
+</main>
 
 </body>
 </html>
+
+

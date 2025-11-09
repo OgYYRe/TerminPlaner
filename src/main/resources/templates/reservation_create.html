@@ -1,48 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <title>Neue Reservation</title>
+    <link rel="stylesheet" href="../static/styles.css">
 </head>
 <body>
+<main class="container">
 
-<h1>Neue Reservation erstellen</h1>
+    <section class="card">
+        <h1>Neue Reservation erstellen</h1>
 
-<form action="/reservations/create" method="post">
-    <!-- Datum: in der Zukunft -->
-    <label for="date">Datum (TT.MM.JJJJ)</label>
-    <input id="date" name="date" type="date" required /><br><br><br>
+        <form action="/reservations/create" method="post">
+            <div class="row two">
+                <div>
+                    <label for="date">Datum (TT.MM.JJJJ)</label>
+                    <input id="date" name="date" type="date" required>
+                </div>
+            </div>
 
-    <!-- Zeit: 09:00 - 17:00 -->
-    <label for="fromTime">Von (HH:MM)</label>
-    <input id="fromTime" name="fromTime" type="time" min="09:00" max="17:00" required /><br><br><br>
-    <label for ="toTime">Bis (HH:MM)</label>
-    <input id="toTime" name="toTime" type="time" min="09:00" max="17:00" required /><br><br><br>
+            <div class="row two">
+                <div>
+                    <label for="fromTime">Von (HH:MM)</label>
+                    <input id="fromTime" name="fromTime" type="time" min="09:00" max="17:00" required>
+                </div>
+                <div>
+                    <label for="toTime">Bis (HH:MM)</label>
+                    <input id="toTime" name="toTime" type="time" min="09:00" max="17:00" required>
+                </div>
+            </div>
 
-    <!-- Zimmer 101-105 -->
-    <label for="roomId">Zimmer</label>
-    <select id="roomId" name="roomId" required>
-        <option value="" disabled selected>Bitte wählen Sie</option>
-        <option value="101">101</option>
-        <option value="102">102</option>
-        <option value="103">103</option>
-        <option value="104">104</option>
-        <option value="105">105</option>
-    </select><br><br><br>
+            <div class="row">
+                <div>
+                    <label for="roomId">Zimmer</label>
+                    <select id="roomId" name="roomId" required>
+                        <option value="" disabled selected>Bitte wählen Sie</option>
+                        <option value="101">101</option>
+                        <option value="102">102</option>
+                        <option value="103">103</option>
+                        <option value="104">104</option>
+                        <option value="105">105</option>
+                    </select>
+                </div>
+            </div>
 
-    <!-- Bemerkung: 10-200 alphanumerishe Zeichen -->
-    <label for="remark">Bemerkung(10-200)</label>
-    <textarea id="remark" name="remark" minlength="10" maxlength="200" required></textarea><br><br><br>
+            <div class="row">
+                <div>
+                    <label for="remark">Bemerkung (10–200)</label>
+                    <textarea id="remark" name="remark" minlength="10" maxlength="200" required placeholder="Kurze Beschreibung..."></textarea>
+                </div>
+            </div>
 
-    <!-- Teilnehmer: Ad Nachname, Ad Nachname, ... -->
-    <label for="participants">Teilnehmer (kommagetrennt, Vor und Nachname Bitte)</label>
-    <input id="participants" name="participants" required placeholder="Oguzhan Cetinkaya, Luca Waldvogel, Leon Reiter"/><br><br><br>
-    <!-- Validation for participants could be handled server-side -->
+            <div class="row">
+                <div>
+                    <label for="participants">Teilnehmer (kommagetrennt, Vor- & Nachname)</label>
+                    <input type="text" id="participants" name="participants" required
+                           placeholder="Oguzhan Cetinkaya, Luca Waldvogel, Leon Reiter">
+                </div>
+            </div>
 
-    <!-- Submit Button -->
-    <button type="submit">Reservation erstellen</button><br>
+            <div class="actions mt-3">
+                <button type="submit">Reservation erstellen</button>
+                <a href="/" class="btn">Zur Startseite</a>
+            </div>
+        </form>
+    </section>
 
-</form>
-
+</main>
 </body>
 </html>

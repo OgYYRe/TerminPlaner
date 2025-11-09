@@ -1,0 +1,140 @@
+/* ====== Liquid Glass – Modern Minimal UI ====== */
+:root{
+    --bg1:#0f172a;            /* slate-900 */
+    --bg2:#0b1023;            /* deep navy */
+    --fg:#e5e7eb;             /* zinc-200 */
+    --muted:#a1a1aa;          /* zinc-400 */
+    --accent:#60a5fa;         /* blue-400 */
+    --accent-2:#38bdf8;       /* sky-400 */
+    --glass:rgba(255,255,255,.06);
+    --glass-stroke:rgba(255,255,255,.18);
+    --radius:16px;
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+}
+
+/* Page */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+    margin:0;
+    font-family:ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    color:var(--fg);
+    background:
+            radial-gradient(60vmax 60vmax at 10% -10%, rgba(56,189,248,.12), transparent 60%),
+            radial-gradient(50vmax 50vmax at 110% 10%, rgba(96,165,250,.10), transparent 60%),
+            linear-gradient(160deg, var(--bg1), var(--bg2));
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:48px 16px;
+}
+
+/* Layout helpers */
+main, .container{
+    width:min(880px, 100%);
+    margin-inline:auto;
+    display:grid;
+    gap:20px;
+}
+.card, form{
+    background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+    border:1px solid var(--glass-stroke);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    padding:24px;
+}
+
+/* Headings & text */
+h1{
+    margin:0 0 6px;
+    font-size:clamp(26px,3.2vw,36px);
+    letter-spacing:.2px;
+}
+h2{
+    margin:6px 0 12px;
+    font-size:clamp(18px,2.4vw,22px);
+    color:var(--fg);
+    opacity:.9;
+}
+p{margin:0 0 10px; color:var(--muted)}
+
+/* Links & buttons */
+a{color:inherit; text-decoration:none}
+button, .btn{
+    appearance:none; border:0; cursor:pointer; user-select:none;
+    padding:12px 16px; border-radius:12px;
+    background:linear-gradient(180deg, rgba(96,165,250,.25), rgba(56,189,248,.25));
+    color:white; font-weight:600;
+    outline: none;
+    box-shadow: 0 6px 20px rgba(56,189,248,.25), inset 0 0 0 1px rgba(255,255,255,.15);
+    transition: transform .06s ease, filter .2s ease, box-shadow .2s ease, background .2s ease;
+}
+button:hover, .btn:hover{
+    filter:saturate(115%);
+    box-shadow: 0 10px 28px rgba(56,189,248,.30), inset 0 0 0 1px rgba(255,255,255,.2);
+}
+button:active, .btn:active{ transform: translateY(1px) }
+
+/* Forms */
+form label{
+    display:block; font-size:14px; color:var(--muted);
+    margin:10px 0 6px;
+}
+input[type="text"],
+input[type="date"],
+input[type="time"],
+select,
+textarea{
+    width:100%;
+    padding:12px 14px;
+    border-radius:12px;
+    background:var(--glass);
+    color:var(--fg);
+    border:1px solid rgba(255,255,255,.12);
+    outline:none;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+textarea{ min-height:120px; resize:vertical }
+input::placeholder, textarea::placeholder{ color:rgba(229,231,235,.55) }
+
+input:focus, select:focus, textarea:focus{
+    border-color: rgba(96,165,250,.65);
+    box-shadow: 0 0 0 4px rgba(96,165,250,.22), inset 0 1px 0 rgba(255,255,255,.08);
+    background: rgba(255,255,255,.08);
+}
+
+/* Form layout niceties */
+form .row{
+    display:grid; gap:14px;
+    grid-template-columns: 1fr;
+}
+@media (min-width: 640px){
+    form .row.two{ grid-template-columns: 1fr 1fr }
+    form .row.three{ grid-template-columns: 1fr 1fr 1fr }
+}
+form .actions{ margin-top:14px; display:flex; gap:10px; flex-wrap:wrap }
+
+/* Tables (future-proof for public/private pages) */
+table{
+    width:100%; border-collapse:separate; border-spacing:0; overflow:hidden;
+    border-radius:12px; background:var(--glass); border:1px solid rgba(255,255,255,.12);
+}
+th, td{ padding:12px 14px; text-align:left }
+th{ font-weight:600; color:var(--muted) }
+tbody tr+tr td{ border-top:1px solid rgba(255,255,255,.08) }
+
+/* Alerts (Flash-Messages) */
+.alert{
+    padding:12px 14px; border-radius:12px; font-weight:500;
+    border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.08);
+}
+.alert.success{ border-color:rgba(34,197,94,.35) }
+.alert.error{ border-color:rgba(239,68,68,.35) }
+
+/* Small helpers */
+.spacer{ height:8px }
+.center{ text-align:center }
+.mt-2{ margin-top:8px } .mt-3{ margin-top:12px } .mt-4{ margin-top:18px }

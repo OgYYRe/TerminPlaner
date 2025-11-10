@@ -95,7 +95,12 @@ public class ReservationService {
         public RoomNotFoundException(String message) { super(message); }
     }
 
-    public CodeType checkCode(String code) {
+    public CodeType checkCode(String rawCode) {
+        if (rawCode == null || rawCode.isBlank()) {  // Eingabe prüfen
+            return CodeType.NOT_FOUND;
+        }
+        String code = rawCode.trim();
+
         // Suche nach privatem Code
         Optional<Reservation> privateReservation = reservationRepository.findByPrivateCode(code);
         if (privateReservation.isPresent()) {
@@ -111,4 +116,17 @@ public class ReservationService {
         // Code nicht gefunden
         return CodeType.NOT_FOUND;
     }
+
+    // Code anhand public/private Code finden
+    @Transactional(readOnly = true)
+    public Optional<Reservation> findByCode(String rawCode) {
+        if (rawCode == null || rawCode.isBlank()) {  // Eingabe prüfen
+            return Optional.empty();
+        }
+        String code = rawCode.trim();
+        return  reservationRepository.findByPublicCode(code)
+                .or(() -> reservationRepository.findByPrivateCode(code));
+
+    }
+
 }

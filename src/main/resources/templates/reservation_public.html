@@ -10,24 +10,25 @@
 
     <section class="card">
         <h1 th:text="${pageTitle}">Öffentliche Reservation</h1>
-        <p class="mt-2">Code: <strong><span th:text="${publicCode}">CODE</span></strong></p>
+        <p class="mt-2" th:if="${reservation != null}">
+            Code: <strong th:text="${reservation.publicCode}">CODE</strong>
+        </p>
+        <p class="mt-2" th:unless="${reservation != null}">
+            Code: <strong>CODE</strong>
+        </p>
 
-        <!-- Beispiel: Liste der Teilnehmer / Details (optional) -->
-        <div class="mt-3">
-            <table>
-                <thead>
-                <tr><th>Teilnehmer</th><th>Status</th></tr>
-                </thead>
-                <tbody>
-                <!-- Beispiel-Zeilen; in Thymeleaf mit th:each befüllen -->
-                <tr>
-                    <td>Max Muster</td>
-                    <td>eingeladen</td>
-                </tr>
-                </tbody>
-            </table>
+
+
+
+        <div class="mt-3" th:if="${reservation != null}">
+            <p>Raum: <strong th:text="${reservation.room.id}">Raum</strong></p>
+            <p>Start: <strong th:text="${#temporals.format(reservation.startAt, 'dd.MM.yyyy HH:mm')}">Start</strong></p>
+            <p>Ende: <strong th:text="${#temporals.format(reservation.endAt, 'dd.MM.yyyy HH:mm')}">Ende</strong></p>
+            <p>Bemerkung: <strong th:text="${reservation.remark}">-</strong></p>
+            <p>Teilnehmer: <strong th:text="${reservation.participants}">-</strong></p>
         </div>
 
+        <br>
         <div class="actions mt-3">
             <a href="/" class="btn">Zur Startseite</a>
         </div>

@@ -31,7 +31,7 @@ public class Reservation {
     @Column(name = "private_code", nullable = false, unique = true, length = 32)
     private String privateCode;
 
-    @Column
+    @Column(name = "participants", nullable = false, length = 200)
     private String participants;
 
     // Getter und Setter...

@@ -8,6 +8,12 @@
 <body>
 
 <main class="container">
+    <div th:if="${success}" class="alert success" style="margin-bottom: 15px;">
+        <p th:text="${success}"></p>
+    </div>
+    <div th:if="${error}" class="alert error" style="margin-bottom: 15px;">
+        <p th:text="${error}"></p>
+    </div>
     <section class="card">
         <h1>Willkommen zum TerminPlaner</h1>
         <p>Verwalten Sie Ihre Termine effizient und einfach.</p><br>

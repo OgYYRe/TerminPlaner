@@ -28,4 +28,18 @@ public class ReservationPrivateController {
             return "redirect:/";
         }
     }
+
+    // Reservation mit privatem Code löschen und zurück zur Startseite
+    @GetMapping({"/reservation/delete/{privateCode}", "/reservations/private/{privateCode}/delete"}) // Ich hasse path variables
+    public String deleteReservation(@PathVariable String privateCode, org.springframework.web.servlet.mvc.support.RedirectAttributes ra) {
+        boolean deleted = reservationService.deleteByPrivateCode(privateCode);
+        if (deleted){
+            ra.addFlashAttribute("succes", "Die Reservation wurde erfolgreich gelöscht.");
+        } else {
+            ra.addFlashAttribute("error", "Die Reservation konnte nicht gelöscht werden." +
+                    "Code ungültig oder bereits gelöscht.");
+        }
+        return "redirect:/";
+    }
 }
+

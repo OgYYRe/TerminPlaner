@@ -129,4 +129,18 @@ public class ReservationService {
 
     }
 
+    @Transactional
+    public boolean deleteByPrivateCode(String rawCode) {
+        if (rawCode == null || rawCode.isBlank()) {  // Eingabe prüfen
+            return false;
+        }
+        String code = rawCode.trim();
+        return reservationRepository.findByPrivateCode(code)
+                .map(res -> {
+                    reservationRepository.delete(res); // Datensatz löschen
+                    return true;
+                })
+                .orElse(false); // Nichts gefunden
+    }
+
 }

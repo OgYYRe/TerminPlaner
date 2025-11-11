@@ -41,5 +41,48 @@ public class ReservationPrivateController {
         }
         return "redirect:/";
     }
+
+    @GetMapping({"/reservation/edit/{privateCode}", "/reservations/private/{privateCode}/edit"})
+    public String showEditForm(@PathVariable String privateCode, Model model) {
+        return reservationService.findByCode(privateCode)
+                .map(reservation -> {
+                    model.addAttribute("pageTitle", "Reservation bearbeiten");
+                    model.addAttribute("reservation", reservation);
+                    return "reservation_edit";
+                })
+                .orElse("redirect:/");
+
+    }
+
+    // Edit Speichern
+    @org.springframework.web.bind.annotation.PostMapping("/reservation/edit/{privateCode}")
+    public String saveEdit(@org.springframework.web.bind.annotation.PathVariable String privateCode,
+                           @org.springframework.web.bind.annotation.RequestParam String date,
+                           @org.springframework.web.bind.annotation.RequestParam String fromTime,
+                           @org.springframework.web.bind.annotation.RequestParam String toTime,
+                           @org.springframework.web.bind.annotation.RequestParam Integer roomId,
+                           @org.springframework.web.bind.annotation.RequestParam String remark,
+                           @org.springframework.web.bind.annotation.RequestParam String participants,
+                           org.springframework.ui.Model model) {
+        try {
+            var updatedOpt = reservationService.updateReservation(privateCode, date, fromTime, toTime, roomId, remark, participants);
+            if (updatedOpt.isPresent()) {
+                model.addAttribute("pageTitle", "Reservation bearbeiten");
+                model.addAttribute("reservation", updatedOpt.get());
+                model.addAttribute("message", "Änderungen gespeichert. Sie werden weitergeleitet...");
+                model.addAttribute("redirectUrl", "/reservations/private/" + privateCode);
+                return "reservation_edit";
+            } else {
+                model.addAttribute("error", "Code ungültig.");
+                return "reservation_edit";
+            }
+        } catch (ReservationService.RoomNotFoundException | ReservationService.ReservationOverlapException | IllegalArgumentException ex) {
+            model.addAttribute("error", ex.getMessage());
+            // Formular mit alten Werten erneut anzeigen
+            reservationService.findByCode(privateCode).ifPresent(res -> model.addAttribute("reservation", res));
+            model.addAttribute("pageTitle", "Reservation bearbeiten");
+            return "reservation_edit";
+        }
+    }
 }
 

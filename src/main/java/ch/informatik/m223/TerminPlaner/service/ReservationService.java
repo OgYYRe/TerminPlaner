@@ -86,6 +86,40 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
+    // Reservation aktualisieren
+    @Transactional
+    public Optional<Reservation> updateReservation(String privateCode,
+                                                   String date, String fromTime, String toTime,
+                                                   Integer roomId, String remark, String participants) {
+        if (privateCode == null || privateCode.isBlank()) return Optional.empty();
+
+        return reservationRepository.findByPrivateCode(privateCode.trim()).map(existing -> {
+            // Eingaben parsen
+            LocalDateTime newStart = LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(fromTime));
+            LocalDateTime newEnd   = LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(toTime));
+            if (!newEnd.isAfter(newStart)) throw new IllegalArgumentException("Endzeit muss nach der Startzeit liegen.");
+
+            // Raum holen
+            Room room = roomRepository.findById(roomId)
+                    .orElseThrow(() -> new RoomNotFoundException("Raum nicht gefunden: " + roomId));
+
+            // Überlappung prüfen (anderen Datensatz ausschliessen)
+            List<Reservation> overlaps = reservationRepository
+                    .findByRoomIdAndStartAtBeforeAndEndAtAfter(roomId, newEnd, newStart);
+            boolean conflict = overlaps.stream().anyMatch(r -> !r.getId().equals(existing.getId()));
+            if (conflict) throw new ReservationOverlapException("Die Zeit ist in diesem Raum bereits belegt.");
+
+            // Werte setzen
+            existing.setRoom(room);
+            existing.setStartAt(newStart);
+            existing.setEndAt(newEnd);
+            existing.setRemark(remark);
+            existing.setParticipants(participants);
+
+            return reservationRepository.save(existing);
+        });
+    }
+
     // Eigene Exception-Klassen (können in separaten Dateien erstellt werden)
     public static class ReservationOverlapException extends RuntimeException {
         public ReservationOverlapException(String message) { super(message); }

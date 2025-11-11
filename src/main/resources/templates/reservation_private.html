@@ -10,19 +10,23 @@
 
     <section class="card">
         <h1 th:text="${pageTitle}">Private Reservation verwalten</h1>
-        <div th:if="${message}" class="alert success" style="color: green; margin: 10px 0;">
-            <p th:text="${message}"></p>
-            <script>
-                setTimeout(function(){ window.location.href = '/'; }, 2500);
+        <div th:if="${message}" class="alert success" style="margin-bottom: 15px;">
+            <p th:text="${message}" style="color: lawngreen"></p>
+            <script th:if="${redirectUrl != null}" th:inline="javascript">
+                setTimeout(function(){ window.location.href = [[${redirectUrl}]]; }, 2500);
             </script>
+        </div>
+
+        <div th:if="${error}" class="alert error" style="margin-bottom: 15px;">
+            <p th:text="${error}" style="color: red"></p>
         </div>
 
         <div th:if="${error}" class="alert error" style="color: red; margin: 10px 0;">
             <p th:text="${error}"></p>
         </div>
-        <p class="mt-2">Hier können Sie Ihre Reservation bearbeiten oder löschen.</p>
+        <p class="mt-2" th:if="${message} == null">Hier können Sie Ihre Reservation bearbeiten oder löschen.</p>
 
-        <p class="mt-2" th:unless="${reservation != null}">
+        <p class="mt-2" th:if="${message} == null" th:unless="${reservation != null}">
             Code: <strong>CODE</strong>
         </p>
 

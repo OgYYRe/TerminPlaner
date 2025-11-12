@@ -1,7 +1,10 @@
 package ch.informatik.m223.TerminPlaner.repository;
 
 import ch.informatik.m223.TerminPlaner.model.Reservation;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -27,4 +30,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     Optional<Reservation> findByPrivateCode(String privateCode);
 
     Optional<Reservation> findByPublicCode(String publicCode);
+
+    @Query("select r from Reservation r " +
+            "order by FUNCTION('date', r.startAt) asc, FUNCTION('time', r.startAt) asc, r.id asc")
+    Page<Reservation> findAllOrderByDateTime(Pageable pageable);
+
+
 }

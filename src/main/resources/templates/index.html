@@ -20,6 +20,33 @@
         <a href="/reservations/create" class="btn">Raum reservieren</a>
     </section>
 
+    <section id="reservation-list" style="margin-top:20px;">
+        <h2 style="margin:0 0 10px 0;">Vorhandene Reservationen</h2>
+
+        <!-- Scroll-Container -->
+        <div id="resScroll" style="max-height:360px; overflow-y:auto; border-radius:12px;">
+
+            <table id="reservationsTable" style="width:100%; border-collapse:collapse;">
+                <thead id="resHead" style="display:none; position:sticky; top:0; background:#1b2230;">
+                <tr style="text-align:left;">
+                    <th style="padding:6px 12px; border-bottom:1px solid #555;">Datum</th>
+                    <th style="padding:6px 12px; border-bottom:1px solid #555;">Von</th>
+                    <th style="padding:6px 12px; border-bottom:1px solid #555;">Bis</th>
+                    <th style="padding:6px 12px; border-bottom:1px solid #555;">Raum</th>
+                </tr>
+                </thead>
+                <tbody id="reservations"></tbody>
+            </table>
+
+
+            <div id="scrollSentinel" style="height:1px;"></div>
+        </div>
+
+        <div id="emptyMsg" style="display:none; padding:8px 0;">Derzeit gibt es keine Reservationen</div>
+        <div id="loading" style="display:none; padding:8px 0;">Laden...</div>
+    </section>
+
+
     <div class="card">
         <h2>Reservation suchen</h2>
         <form action="/check-code" method="post">
@@ -31,6 +58,8 @@
 </main>
 
 </body>
+
+<script th:src="@{/js/reservation-list.js}"></script>
 </html>
 
 

@@ -4,6 +4,9 @@ import ch.informatik.m223.TerminPlaner.model.Reservation;
 import ch.informatik.m223.TerminPlaner.model.Room;
 import ch.informatik.m223.TerminPlaner.repository.ReservationRepository;
 import ch.informatik.m223.TerminPlaner.repository.RoomRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -176,5 +179,11 @@ public class ReservationService {
                 })
                 .orElse(false); // Nichts gefunden
     }
-
+        // Paginierte Liste holen
+        @Transactional(readOnly = true)
+        public Page<Reservation> listPaged(int page, int size) {
+            // page: 0-basiert, size: z.B. 10
+            Pageable pageable = PageRequest.of(page, size);
+            return reservationRepository.findAllOrderByDateTime(pageable);
+    }
 }

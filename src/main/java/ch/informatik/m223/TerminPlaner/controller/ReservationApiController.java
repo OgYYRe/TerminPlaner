@@ -22,7 +22,7 @@ public class ReservationApiController {
         this.reservationService = reservationService;
     }
 
-    // JSON für Infinite-Scroll
+    // JSON für Infinite-Scroll a
     @GetMapping
     public Map<String, Object> list(
             @RequestParam(defaultValue = "0") int page,

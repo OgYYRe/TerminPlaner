@@ -2,7 +2,6 @@ package ch.informatik.m223.TerminPlaner.controller;
 
 import ch.informatik.m223.TerminPlaner.service.ReservationService;
 import ch.informatik.m223.TerminPlaner.service.ReservationService.CodeType;
-import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,7 +42,7 @@ public class IndexController {
             return "redirect:/reservations/private/" + code;
         } else {
                 // Fehlerbehandlung
-                ra.addFlashAttribute("error", "Code nicht gefunden. Bitte prüfen Sie Ihre Eingabe.");
+                ra.addFlashAttribute("error", "Es gibt keine Reservation mit Ihrem Code. Bitte prüfen Sie Ihre Eingabe.");
                 return "redirect:/";
         }
     }

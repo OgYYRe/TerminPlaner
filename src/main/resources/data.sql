@@ -17,23 +17,5 @@ INSERT INTO reservations (room_id, start_at, end_at, remark, public_code, privat
   'Wöchentliches Team-Meeting',
   'p6qMh4uT',
   '8R38dgdO',
-  'Max Mustermann, Erika Mustermann' -- Beispiel-Teilnehmer
-),
-(
-  103,
-  '2025-12-05 14:30:00',
-  '2025-12-05 16:00:00',
-  'Kundenpräsentation',
-  'ia7Aie2mn',
-  'pappP738j',
-  'Peter Beispiel' -- Beispiel-Teilnehmer
-),
-(
-  105,
-  '2025-12-10 09:00:00',
-  '2025-12-10 17:00:00',
-  'Ganztages-Workshop',
-  'sd97hdbsA',
-  'w1onfd898',
-  'Alle Workshop-Teilnehmer' -- Beispiel-Teilnehmer
+  'Max Mustermann,Erika Mustermann' -- Beispiel-Teilnehmer
 );

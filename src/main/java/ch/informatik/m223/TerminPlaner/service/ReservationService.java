@@ -139,13 +139,68 @@ public class ReservationService {
     public Optional<Reservation> updateReservation(String privateCode,
                                                    String date, String fromTime, String toTime,
                                                    Integer roomId, String remark, String participants) {
-        if (privateCode == null || privateCode.isBlank()) return Optional.empty();
+        if (privateCode == null || privateCode.isBlank()) {
+            return Optional.empty();
+        }
 
-        return reservationRepository.findByPrivateCode(privateCode.trim()).map(existing -> {
-            // Eingaben parsen
-            LocalDateTime newStart = LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(fromTime));
-            LocalDateTime newEnd   = LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(toTime));
-            if (!newEnd.isAfter(newStart)) throw new IllegalArgumentException("Endzeit muss nach der Startzeit liegen.");
+        String cleanedPrivateCode = privateCode.trim();
+
+        return reservationRepository.findByPrivateCode(cleanedPrivateCode).map(existing -> {
+
+            // Pflichtfelder prüfen
+            if (date == null || date.isBlank()
+                    || fromTime == null || fromTime.isBlank()
+                    || toTime == null || toTime.isBlank()
+                    || roomId == null
+                    || remark == null || remark.isBlank()
+                    || participants == null || participants.isBlank()) {
+                throw new IllegalArgumentException("Alle Felder müssen ausgefüllt werden.");
+            }
+
+            String trimmedRemark = remark.trim();
+            String trimmedParticipants = participants.trim();
+
+            // Bemerkungs-Validierung
+            if (trimmedRemark.length() < 10 || trimmedRemark.length() > 200) {
+                throw new IllegalArgumentException("Die Bemerkung muss zwischen 10 und 200 Zeichen lang sein.");
+            }
+
+            // Teilnehmer-Validierung
+            String participantsRegex =
+                    "^[A-Za-zÄÖÜäöü]+(?: [A-Za-zÄÖÜäöü]+)*(,[A-Za-zÄÖÜäöü]+(?: [A-Za-zÄÖÜäöü]+)*)*$";
+            if (!trimmedParticipants.matches(participantsRegex)) {
+                throw new IllegalArgumentException(
+                        "Teilnehmer als kommagetrennte Namensliste eingeben, z.B. Max Muster,Anna Beispiel.");
+            }
+
+            // Raum-Validierung (101-105)
+            if (roomId < 101 || roomId > 105) {
+                throw new IllegalArgumentException("Ungültige Raum-ID. Erlaubte Räume sind 101 bis 105.");
+            }
+
+            // Datum+Zeit-Validierung
+            LocalDate parsedDate = LocalDate.parse(date);
+            if (parsedDate.isBefore(LocalDate.now())) {
+                throw new IllegalArgumentException("Das Datum muss heute oder in der Zukunft liegen.");
+            }
+
+            LocalTime startTime = LocalTime.parse(fromTime);
+            LocalTime endTime = LocalTime.parse(toTime);
+            LocalTime earliest = LocalTime.of(9, 0);
+            LocalTime latest = LocalTime.of(17, 0);
+
+            if (startTime.isBefore(earliest) || endTime.isAfter(latest)) {
+                throw new IllegalArgumentException("Die Zeit muss zwischen 09:00 und 17:00 liegen.");
+            }
+
+            // Start<End Validierung
+            if (!endTime.isAfter(startTime)) {
+                throw new IllegalArgumentException("Endzeit muss nach der Startzeit liegen.");
+            }
+
+            // Eingaben in LocalDateTime umwandeln
+            LocalDateTime newStart = LocalDateTime.of(parsedDate, startTime);
+            LocalDateTime newEnd = LocalDateTime.of(parsedDate, endTime);
 
             // Raum holen
             Room room = roomRepository.findById(roomId)
@@ -155,14 +210,16 @@ public class ReservationService {
             List<Reservation> overlaps = reservationRepository
                     .findByRoomIdAndStartAtBeforeAndEndAtAfter(roomId, newEnd, newStart);
             boolean conflict = overlaps.stream().anyMatch(r -> !r.getId().equals(existing.getId()));
-            if (conflict) throw new ReservationOverlapException("Die Zeit ist in diesem Raum bereits belegt.");
+            if (conflict) {
+                throw new ReservationOverlapException("Die Zeit ist in diesem Raum bereits belegt.");
+            }
 
             // Werte setzen
             existing.setRoom(room);
             existing.setStartAt(newStart);
             existing.setEndAt(newEnd);
-            existing.setRemark(remark);
-            existing.setParticipants(participants);
+            existing.setRemark(trimmedRemark);
+            existing.setParticipants(trimmedParticipants);
 
             return reservationRepository.save(existing);
         });

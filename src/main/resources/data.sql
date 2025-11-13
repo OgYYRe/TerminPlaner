@@ -17,5 +17,5 @@ INSERT INTO reservations (room_id, start_at, end_at, remark, public_code, privat
   'Wöchentliches Team-Meeting',
   'p6qMh4uT',
   '8R38dgdO',
-  'Max Mustermann,Erika Mustermann' -- Beispiel-Teilnehmer
+  'Max Mustermann, Erika Mustermann' -- Beispiel-Teilnehmer
 );

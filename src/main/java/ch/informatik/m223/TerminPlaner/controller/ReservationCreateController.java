@@ -34,7 +34,7 @@ public class ReservationCreateController {
             @RequestParam("toTime") String toTime,
             @RequestParam("roomId") Integer roomId,
             @RequestParam("remark") String remark,
-            @RequestParam("participants") String participants, // Wird noch nicht gespeichert!
+            @RequestParam("participants") String participants,
             RedirectAttributes redirectAttributes) {
 
         try {

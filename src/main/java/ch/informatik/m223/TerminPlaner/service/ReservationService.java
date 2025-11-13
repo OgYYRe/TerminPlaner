@@ -49,8 +49,7 @@ public class ReservationService {
     /**
      * Hauptmethode zum Erstellen der Reservation.
      */
-    public Reservation createReservation(String date, String fromTime, String toTime,
-                                         Integer roomId, String remark, String participants)
+    public Reservation createReservation(String date, String fromTime, String toTime, Integer roomId, String remark, String participants)
             throws ReservationOverlapException, RoomNotFoundException {
 
         // AlleValidierungen starten hier
@@ -73,9 +72,9 @@ public class ReservationService {
 
         // Teilnehmer-Validierung
         String trimmedParticipants = participants.trim();
-        String participantsRegex =  "^[A-Za-zÄÖÜäöü]+(?: [A-Za-zÄÖÜäöü]+)*(,[A-Za-zÄÖÜäöü]+(?: [A-Za-zÄÖÜäöü]+)*)*$";
+        String participantsRegex =  "^[A-Za-zÄÖÜäöü]+ [A-Za-zÄÖÜäöü]+(?: [A-Za-zÄÖÜäöü]+)*(, [A-Za-zÄÖÜäöü]+ [A-Za-zÄÖÜäöü]+(?: [A-Za-zÄÖÜäöü]+)*)*$";
         if (!trimmedParticipants.matches(participantsRegex)) {
-            throw new IllegalArgumentException("Teilnehmer als kommagetrennte Namensliste eingeben, z.B. Oguzhan Cetinkaya,Luca Waldvogel,Leon Reiter");
+            throw new IllegalArgumentException("Teilnehmer als kommagetrennte Namensliste eingeben, z.B. Oguzhan Cetinkaya, Luca Waldvogel, Leon Reiter");
         }
 
         // Raum-Validierung
@@ -167,10 +166,10 @@ public class ReservationService {
 
             // Teilnehmer-Validierung
             String participantsRegex =
-                    "^[A-Za-zÄÖÜäöü]+(?: [A-Za-zÄÖÜäöü]+)*(,[A-Za-zÄÖÜäöü]+(?: [A-Za-zÄÖÜäöü]+)*)*$";
+                    "^[A-Za-zÄÖÜäöü]+ [A-Za-zÄÖÜäöü]+(?: [A-Za-zÄÖÜäöü]+)*(, [A-Za-zÄÖÜäöü]+ [A-Za-zÄÖÜäöü]+(?: [A-Za-zÄÖÜäöü]+)*)*$";
             if (!trimmedParticipants.matches(participantsRegex)) {
                 throw new IllegalArgumentException(
-                        "Teilnehmer als kommagetrennte Namensliste eingeben, z.B. Max Muster,Anna Beispiel.");
+                        "Teilnehmer als kommagetrennte Namensliste eingeben, z.B. Max Muster, Anna Beispiel.");
             }
 
             // Raum-Validierung (101-105)

@@ -42,7 +42,7 @@ public class Reservation {
 
     @Column(name = "participants", nullable = false, length = 200)
     @NotBlank(message = "Teilbehmer dürfen nicht leer sein.")
-    @Pattern(regexp = "^[A-Za-zÄÖÜäöü]+(?: [A-Za-zÄÖÜäöü]+)*(,[A-Za-zÄÖÜäöü]+(?: [A-Za-zÄÖÜäöü]+)*)*$",
+    @Pattern(regexp = "^[A-Za-zÄÖÜäöü]+ [A-Za-zÄÖÜäöü]+(?: [A-Za-zÄÖÜäöü]+)*(, [A-Za-zÄÖÜäöü]+ [A-Za-zÄÖÜäöü]+(?: [A-Za-zÄÖÜäöü]+)*)*$",
     message = "Teilnehmer müssen durch Kommas getrennt sein und dürfen nur Buchstaben und Leerzeichen enthalten.")
     private String participants;
 

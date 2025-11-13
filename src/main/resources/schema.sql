@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS reservations (
     start_at DATETIME NOT NULL,
     end_at   DATETIME NOT NULL,
     remark   VARCHAR(200) NOT NULL,
-    public_code  VARCHAR(32) NOT NULL UNIQUE,
-    private_code VARCHAR(32) NOT NULL UNIQUE,
+    public_code  VARCHAR(32) NOT NULL UNIQUE COLLATE utf8mb4_bin,
+    private_code VARCHAR(32) NOT NULL UNIQUE COLLATE utf8mb4_bin,
     participants VARCHAR(200) NOT NULL,
     CONSTRAINT chk_time CHECK (end_at > start_at),
     CONSTRAINT fk_room FOREIGN KEY (room_id) REFERENCES rooms(id)

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reservation Bearbeiten</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<main class="container">
+    <section class="card">
+        <h1 th:text="${pageTitle}">Reservation bearbeiten</h1>
+
+        <!-- Fehler/Info + Weiterleitung -->
+        <div th:if="${message}" class="alert success" style="margin-bottom: 15px;">
+            <p th:text="${message}" style="color: lawngreen"></p>
+            <script th:if="${redirectUrl != null}" th:inline="javascript">
+                setTimeout(function() {
+                    window.location.href = [[${redirectUrl}]];
+                }, 2500);
+            </script>
+        </div>
+
+        <div th:if="${error}" class="alert error" style="margin-bottom: 15px;">
+            <p th:text="${error}" style="color: red"></p>
+        </div>
+
+
+        <!--  Formular mit alten Werten -->
+        <form th:action="@{'/reservation/edit/' + ${reservation.privateCode}}" method="post">
+            <p>Privater Code: <strong th:text="${reservation.privateCode}">CODE</strong></p>
+
+            <div class="row two">
+                <div>
+                    <label for="date">Datum (TT.MM.JJJJ)</label>
+                    <input id="date" name="date" type="date"
+                           th:value="${#temporals.format(reservation.startAt, 'yyyy-MM-dd')}" required>
+                </div>
+                <div>
+                    <label for="roomId">Zimmer</label>
+                    <select id="roomId" name="roomId" required>
+                        <option th:value="101" th:selected="${reservation.room.id == 101}">101</option>
+                        <option th:value="102" th:selected="${reservation.room.id == 102}">102</option>
+                        <option th:value="103" th:selected="${reservation.room.id == 103}">103</option>
+                        <option th:value="104" th:selected="${reservation.room.id == 104}">104</option>
+                        <option th:value="105" th:selected="${reservation.room.id == 105}">105</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row two">
+                <div>
+                    <label for="fromTime">Von (HH:MM)</label>
+                    <input id="fromTime" name="fromTime" type="time"
+                           th:value="${#temporals.format(reservation.startAt, 'HH:mm')}" required>
+                </div>
+                <div>
+                    <label for="toTime">Bis (HH:MM)</label>
+                    <input id="toTime" name="toTime" type="time"
+                           th:value="${#temporals.format(reservation.endAt, 'HH:mm')}" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div>
+                    <label for="remark">Bemerkung (10–200)</label>
+                    <textarea id="remark" name="remark" minlength="10" maxlength="200" required
+                              th:text="${reservation.remark}"></textarea>
+                </div>
+            </div>
+
+            <div class="row">
+                <div>
+                    <label for="participants">Teilnehmer (kommagetrennt)</label>
+                    <input id="participants" name="participants" type="text" required
+                           th:value="${reservation.participants}">
+                </div>
+            </div>
+
+            <div class="actions mt-3">
+                <button type="submit">Speichern</button>
+                <a th:href="@{'/reservations/private/' + ${reservation.privateCode}}" class="btn">Abbrechen</a>
+            </div>
+        </form>
+
+    </section>
+</main>
+
+</body>
+</html>

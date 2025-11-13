@@ -53,14 +53,59 @@ public class ReservationService {
                                          Integer roomId, String remark, String participants)
             throws ReservationOverlapException, RoomNotFoundException {
 
-        // 1. Eingaben in LocalDateTime umwandeln
-        LocalDateTime startAt = LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(fromTime));
-        LocalDateTime endAt = LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(toTime));
+        // AlleValidierungen starten hier
+        // Pflichtfelder prüfen
+        if(date == null || date.isBlank()
+                || fromTime == null || fromTime.isBlank()
+                || toTime == null || toTime.isBlank()
+                || roomId == null
+                || remark == null || remark.isBlank()
+                || participants == null || participants.isBlank()) {
+            throw new IllegalArgumentException("Alle Felder müssen ausgefüllt werden.");
+        }
 
-        // 2. Zeit-Validierung (Ende muss nach Anfang sein)
-        if (!endAt.isAfter(startAt)) {
+        String trimmedRemark = remark.trim();
+
+        // Bemerkung-Validierung
+        if (trimmedRemark.length() < 10 || trimmedRemark.length() > 200) {
+            throw new IllegalArgumentException("Die Bemerkung muss zwischen 10 und 200 Zeichen lang sein.");
+        }
+
+        // Teilnehmer-Validierung
+        String trimmedParticipants = participants.trim();
+        String participantsRegex =  "^[A-Za-zÄÖÜäöü]+(?: [A-Za-zÄÖÜäöü]+)*(,[A-Za-zÄÖÜäöü]+(?: [A-Za-zÄÖÜäöü]+)*)*$";
+        if (!trimmedParticipants.matches(participantsRegex)) {
+            throw new IllegalArgumentException("Teilnehmer als kommagetrennte Namensliste eingeben, z.B. Oguzhan Cetinkaya,Luca Waldvogel,Leon Reiter");
+        }
+
+        // Raum-Validierung
+        if(roomId < 101 || roomId > 105){
+            throw new IllegalArgumentException("Ungültige Raum-ID. Erlaubte Raums sind 101 bis 105.");
+        }
+
+        // Datum+Zeit-Validierung
+        LocalDate parsedDate = LocalDate.parse(date);
+        if (parsedDate.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Das Datum muss heute oder in der Zukunft liegen.");
+        }
+
+        LocalTime startTime = LocalTime.parse(fromTime);
+        LocalTime endTime = LocalTime.parse(toTime);
+        LocalTime earliest = LocalTime.of(9, 0);
+        LocalTime latest = LocalTime.of(17, 0);
+
+        if (startTime.isBefore(earliest) || endTime.isAfter(latest)) {
+            throw new IllegalArgumentException("Die Zeit muss zwischen 09:00 und 17:00 liegen.");
+        }
+
+        // Start<End Validierung
+        if(!endTime.isAfter(startTime)) {
             throw new IllegalArgumentException("Endzeit muss nach der Startzeit liegen.");
         }
+
+        // 1. Eingaben in LocalDateTime umwandeln
+        LocalDateTime startAt = LocalDateTime.of(parsedDate, startTime); //Umgeschrieben: Oben habe ich es erstellt.
+        LocalDateTime endAt = LocalDateTime.of(parsedDate, endTime);
 
         // 3. Raum finden
         Room room = roomRepository.findById(roomId)
@@ -80,10 +125,10 @@ public class ReservationService {
         reservation.setRoom(room);
         reservation.setStartAt(startAt);
         reservation.setEndAt(endAt);
-        reservation.setRemark(remark);
+        reservation.setRemark(trimmedRemark);
         reservation.setPublicCode(publicCode);
         reservation.setPrivateCode(privateCode);
-        reservation.setParticipants(participants);
+        reservation.setParticipants(trimmedParticipants);
 
         // 7. Speichern und zurückgeben
         return reservationRepository.save(reservation);
